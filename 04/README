@@ -1,0 +1,3 @@
+KATA: reverse word order in a string in-place (may use a temp char)
+
+Example: reverse("word1 word2 word3") -> "word3 word2 word1"
