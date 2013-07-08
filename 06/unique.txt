@@ -1,0 +1,6 @@
+
+ Write a function to determine if an input string
+ contains any duplicate characters, i.e. if each
+ character is unique return True, otherwise False.
+
+ What if you cannot use any additional data structures?
