@@ -1,6 +1,14 @@
 
+ A: 
+
  Write a function to determine if an input string
  contains any duplicate characters, i.e. if each
  character is unique return True, otherwise False.
 
  What if you cannot use any additional data structures?
+
+ B:
+
+ Given two strings, write a function that returns True
+ if the second string is permutation of the first and
+ False otherwise.
