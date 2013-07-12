@@ -1,0 +1,5 @@
+
+ Write a function that replaces all spaces in a given string
+ by a %20 (except the trailing placeholders). 
+ Assume a null-terminated string that is long
+ enough to hold the final result (which length is given).
