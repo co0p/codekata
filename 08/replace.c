@@ -1,11 +1,10 @@
-// replaces ' ' with %20, assumening enough space
-// is available and the final length is provided
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
+// replaces ' ' with %20, assumening enough space
+// is available and the final length is provided
 void replace(char *str, size_t len) {
   int from_idx, to_idx;
 
@@ -28,6 +27,45 @@ void replace(char *str, size_t len) {
   }
 }
 
+#define MAX_STR 128
+// compresses e.g. abbccccddd to a1b2c4d3
+// return original string if new string wouldn't be shorter
+// the user is responsible for freeing the strings
+// O(n) time, O(n) space
+char *compress(char* str) {
+  int i, j, cnt;
+  size_t len = strlen(str), cnt_len;
+  char *new_str, cnt_str[MAX_STR];
+
+  if ((new_str = malloc(len+1)) == NULL) {
+    fprintf(stderr, "FATAL ERROR: Out of memory in compress()\n");
+    exit(EXIT_FAILURE);
+  }
+
+  i = j = 0;
+  while (i < len) {           // for each character in the original string
+
+    new_str[j++] = str[i++];
+    cnt = 1;
+
+    while (str[i] == str[i-1]) {   // for each substring of identical chars
+      ++cnt;
+      ++i;
+    }
+    snprintf(cnt_str, MAX_STR, "%d", cnt);
+    cnt_len = strlen(cnt_str);
+    if (j + cnt_len >= len) {      // original is shorter, return it
+      free(new_str);
+      return str;
+    }
+    strncpy(new_str+j,cnt_str,cnt_len+1);
+    j += cnt_len;
+  }
+
+  return new_str;
+}
+
+
 int main(void) {
 
   char str1[11], str2[48], str3[7]; // +1 for '\0'
@@ -43,6 +81,10 @@ int main(void) {
   assert(strcmp(str1, "Mr%20Smith") == 0);
   replace(str2, len2);
   assert(strcmp(str2, "The%20phone%20is%20ringing%20-%20Oh%20My%20God!") == 0);
+
+  assert(strcmp(compress("abbccccddd"),"a1b2c4d3")==0);
+  assert(strcmp(compress("aabbccdde"), "aabbccdde") == 0);
+  assert(strcmp(compress("aabbccddee"), "aabbccddee") == 0);
 
   return EXIT_SUCCESS;
 }

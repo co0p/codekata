@@ -1,5 +1,13 @@
 
+A:
+
  Write a function that replaces all spaces in a given string
  by a %20 (except the trailing placeholders). 
  Assume a null-terminated string that is long
  enough to hold the final result (which length is given).
+
+B:
+
+ Given a string, compress it using the following scheme:
+ e.g. abbccccddd -> a1b2c4d3; if the compressed string is
+ not shorter than the original, than the original should be used
