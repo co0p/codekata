@@ -1,0 +1,12 @@
+
+ A: 
+    Given a NxN matrix of 4 byte pixels,
+    write a function to 90degree-rotate the image.
+
+    Can you do it in-place?
+
+
+ B:
+    Given an MxN matrix. If an element m_ij is zero,
+    set row i and column j to all zeroes.
+    
