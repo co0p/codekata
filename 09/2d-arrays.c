@@ -18,28 +18,44 @@ void print(int *m, int rows, int cols) {
 // rotate90 -- version using O(N) temporary store
 void rotate90(int *m, int N) {
   int tmp[N];
-  int i, j = N/2-1, k, l;
+  int i, j = N/2-1, k, l = N;
+  int x, y, z;
 
   printf("ZOO j = %d\n",j);
-  for (i = 0; i < N/2; ++i) {
-    l = N - i;                 // sub-row limit
+  for (i = 0; i < N/2; ++i) {  // starting with the leftmost pixel [0,0] do the 'rounds' (until went for half of the diagonal)
     printf("XOO l = %d\n",l);
     for (k = i; k < l; ++k) {
-      tmp[k] = *(m+sizeof(*m)*i+k);
+      tmp[k] = *(m+sizeof(*m)*i+k);       // save top row
       printf("POO tmp[k] = %d\n",tmp[k]);
     }
 
-  printf("YO\n");
-  //print(tmp[0], 1, N);
+    //print(tmp[0], 1, N);
+    for (z = 0; z < N; ++z)
+      printf("%d ", tmp[z]);
+    printf("\n\n");
 
-  printf("YO MAN\n");
-    //copy col left to row top
+// XXX : sort out the access
 
+    // copy leftmost col to top row
+    for (x = i; x < i+l; ++x) {  // x is row, col is determined as (i+l - x)
+      *(m+sizeof(*m)*i+(N-x)) = *(m+sizeof(*m)*x+i);
+    }
+
+#if 0
+    col -> row
+    row -> N - row th col
+    TODO
+    o,o    o,1
+    1,o -> o,o
+#endif
     //copy row bottom to col left
 
     //copy col right to row bottom
 
     //copy store to col tight
+
+
+    l -= 2; // sub-row limit
   }
 }
 
