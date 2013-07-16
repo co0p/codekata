@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdbool.h>
 
 // replaces ' ' with %20, assumening enough space
 // is available and the final length is provided
@@ -66,6 +67,37 @@ char *compress(char* str) {
 }
 
 
+// returns true if str2 is substring of str1 , false otherwise
+bool is_substr(const char *str1, const char *str2) {
+  return (strstr(str1, str2) != NULL);
+}
+
+// returns true if str1 is ratation of str2
+bool is_rotation(char *str1, const char *str2) {
+  char *newstr;
+  size_t len;
+  int i;
+  bool ret = false;
+
+  if ((len = strlen(str1)) != strlen(str2)) {
+    return false;
+  }
+
+  if((newstr = malloc(2*len+1)) == NULL) {
+    fprintf(stderr, "FATAL ERROR: Out of memory in is_rotation()\n");
+    exit(EXIT_FAILURE);
+  }
+
+  strcpy(newstr, str1);
+  strcpy(newstr+len, str1);
+
+  ret = is_substr((const char *) newstr, (const char *) str2);
+
+  free(newstr);
+  return ret;
+}
+
+
 int main(void) {
 
   char str1[11], str2[48], str3[7]; // +1 for '\0'
@@ -85,6 +117,11 @@ int main(void) {
   assert(strcmp(compress("abbccccddd"),"a1b2c4d3")==0);
   assert(strcmp(compress("aabbccdde"), "aabbccdde") == 0);
   assert(strcmp(compress("aabbccddee"), "aabbccddee") == 0);
+
+  assert(is_rotation("rotation", "foobar") == false);
+  assert(is_rotation("","") == true);
+  assert(is_rotation("foobar", "foobaz") == false);
+  assert(is_rotation("foobar", "barfoo") == true);
 
   return EXIT_SUCCESS;
 }

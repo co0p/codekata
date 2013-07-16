@@ -11,3 +11,9 @@ B:
  Given a string, compress it using the following scheme:
  e.g. abbccccddd -> a1b2c4d3; if the compressed string is
  not shorter than the original, than the original should be used
+
+C:
+
+ Given a method bool is_substr(char *s, const char *s2) which returns
+ true if s is substring of s2. Write code that checks whether s2
+ is a rotation of a given string s1. You may call is_substr() only once. 
