@@ -25,3 +25,5 @@ it is originally written (i.e., typed into a computer) by a human in plain text
 more ?
 --------
 - http://codekata.pragprog.com/
+- http://rosettacode.org/
+- 'Cracking the Coding Interview' by Gayle Laakmann McDowell, careercup.com
