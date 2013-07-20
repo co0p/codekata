@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
+#include <stdbool.h>
 
 // using 1d array as approx 2d array
 
@@ -37,6 +39,50 @@ void rotate90(int *m, int N) {
 }
 
 
+// function that sets row i and col j if Mij = 0
+// update happens in-place
+// TODO: use a bit vector instead of the bool array
+void set_zero_rc(int *m, int rows, int cols) {
+   //bool row_markers[rows];  // would work with C99
+   bool *row_markers, *col_markers;
+   int i, j;
+
+   if ((row_markers = malloc(rows*sizeof(*row_markers))) == NULL) {
+     fprintf(stderr, "FATAL ERROR: out of memory in set_zero_rc()\n");
+     exit(EXIT_FAILURE);
+   }
+
+    if ((col_markers = malloc(cols*sizeof(*col_markers))) == NULL) {
+     fprintf(stderr, "FATAL ERROR: out of memory in set_zero_rc()\n");
+     free(row_markers);
+     exit(EXIT_FAILURE);
+   }
+
+   memset(row_markers, false, rows);
+   memset(col_markers, false, cols);
+
+   for (i = 0; i < rows; ++i) {
+     for (j = 0; j < cols; ++j) {
+       if (m[i*rows+j] == 0) {
+         row_markers[i] = true;    // remember which rows and cols to zero out
+         col_markers[j] = true;
+       }
+     }
+   }
+
+   for (i = 0; i < rows; ++i) {
+     for (j = 0; j < cols; ++j) {
+       if (row_markers[i] == true || col_markers[j] == true) {
+         m[i*rows+j] = 0;
+       }
+     }
+   }
+
+   free(row_markers);
+   free(col_markers);
+}
+
+
 
 enum {ADIM = 2, BDIM, CDIM, DDIM};
 
@@ -45,6 +91,7 @@ int main(void) {
   int b[BDIM*BDIM] = {1,2,3,4,5,6,7,8,9};
   int c[CDIM*CDIM] = {1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4};
   int d[DDIM*DDIM] = {1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5};
+  int z[DDIM*DDIM] = {1,1,1,1,1,2,0,2,2,2,3,3,3,3,3,4,4,4,0,4,5,5,5,5,5};
 
   print(a, ADIM, ADIM); // rotate four time should be the same as original
   rotate90(a, ADIM);
@@ -85,6 +132,10 @@ int main(void) {
   print(d, DDIM, DDIM);
   rotate90(d, DDIM);
   print(d, DDIM, DDIM);
+
+  print(z, DDIM, DDIM);
+  set_zero_rc(z, DDIM, DDIM);
+  print(z, DDIM, DDIM);
 
   return EXIT_SUCCESS;
 }
