@@ -1,4 +1,4 @@
-codekata
+﻿codekata
 ========
 
 let's practise coding ... by coding :)
@@ -26,4 +26,6 @@ more ?
 --------
 - http://codekata.pragprog.com/
 - http://rosettacode.org/
+- http://programmingpraxis.com
+- http://www.haskell.org/haskellwiki/H-99:_Ninety-Nine_Haskell_Problems
 - 'Cracking the Coding Interview' by Gayle Laakmann McDowell, careercup.com
