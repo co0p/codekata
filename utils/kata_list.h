@@ -1,5 +1,6 @@
 //
 // simle single linked list API
+// (!) user is responsible for allocating and freeing the values
 //
 #ifndef KATA_LIST_H
 #define KATA_LIST_H
@@ -15,23 +16,21 @@ typedef struct list {
   struct list_elem *first;
   struct list_elem *last;
   long length;
-  list_elem_t *(*alloc_fn)(void *value);
-  void (*free_fn)(list_elem_t *elem);
-  void (*print_fn)(list_elem_t *);
+  void (*print_fn)(void *value);
   int (*compare_fn)(void *a, void *b); // for sort and search
 } list_t;
 
 
-extern list_t *list_create(alloc_fn, free_fn, print_fn, compare_fn);
-extern list_destroy(list_t *l);
-extern long kata_list_length(kata_list_t *l);
-extern long kata_list_insert(kata_list_t *l, void *value, int order);
-extern long kata_list_append(kata_list_t *l, void *value)
-extern long kata_list_prepend(kata_list_t *l, void *value);
-extern long kata_list_remove(kata_list *l, void *value);
-extern long kata_list_remove_dupes(kata_list *l, void *value);
-extern kata_list_elem_t *kata_list_search(void *value);
-extern long kata_list_sort(kata_list_t *l, int order);
-extern void kata_list_print(kata_list_t *l);
+extern list_t * list_create(void (*print_fn)(void *), int (*compare_fn)(void *a, void *b));
+extern void list_destroy(list_t *l, void (*destroy_elem_fn)(list_elem_t *elem));
+extern long list_length(list_t *l);
+extern long list_insert(list_t *l, void *value, int order);
+extern long list_append(list_t *l, void *value);
+extern long list_prepend(list_t *l, void *value);
+extern list_elem_t *list_remove(list_t *l, void *value);
+extern long list_remove_dupes(list_t *l, void *value); // TODO: need a function as argument to remove values
+extern list_elem_t *list_search(void *value);
+extern long list_sort(list_t *l, int order);
+extern void list_print(list_t *l);
 
 #endif /* KATA_LIST_H */
