@@ -31,6 +31,6 @@ extern list_elem_t *list_remove(list_t *l, void *value);
 extern long list_remove_dupes(list_t *l, void *value); // TODO: need a function as argument to remove values
 extern list_elem_t *list_search(void *value);
 extern long list_sort(list_t *l, int order);
-extern void list_print(list_t *l);
+extern void list_print(list_t *l, unsigned int cols);
 
 #endif /* KATA_LIST_H */

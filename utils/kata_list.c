@@ -109,40 +109,73 @@ long list_append(list_t *list, void *value) {
 }
 
 
-long list_prepend(list_t *l, void *value) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
-  exit(EXIT_FAILURE);
+long list_prepend(list_t *list, void *value) {
+  list_elem_t *new_elem;
+
+  assert(list != NULL);
+
+  if ((new_elem = malloc(sizeof(list_elem_t))) == NULL) {
+    fprintf(stderr, "FATAL ERROR: list_appen(): out of space\n");
+    exit(EXIT_FAILURE);
+  }
+
+  new_elem->next  = list->first;
+  new_elem->value = value;
+  list->first = new_elem;
+
+  if (list->last == NULL) {
+    list->last = new_elem;
+  }
+
+  list->length++;
+
+  return 1;
 }
 
 
 list_elem_t *list_remove(list_t *list, void *value) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
+  fprintf(stderr,"ERROR: list_remove() not im plemented yet\n");
   exit(EXIT_FAILURE);
-  // find value and remove, usess comapre function
+  // search for value and remove
 }
 
 
 long list_remove_dupes(list_t *l, void *value) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
+  fprintf(stderr,"ERROR: list_remove_dupes() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
  // TODO: need a function as argument to remove values
 
 
 list_elem_t *list_search(void *value) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
+  fprintf(stderr,"ERROR: list_search() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
 
 
 long list_sort(list_t *l, int order) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
+  fprintf(stderr,"ERROR: list_sort() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
 
+// print \n after every cols elements
+void list_print(list_t *list, unsigned int cols) {
+  list_elem_t *tmp;
+  unsigned int cnt;
 
-void list_print(list_t *l) {
-  fprintf(stderr,"ERROR: () not im plemented yet\n");
-  exit(EXIT_FAILURE);
+  assert(list != NULL && cols > 0);
+
+  cnt = cols;
+  tmp = list->first;
+  while (tmp) {
+    if (tmp->value != NULL )
+      list->print_fn(tmp->value);
+    else
+      printf("NULL ");
+
+    if (cnt-- == 0)
+      printf("\n");
+    tmp = tmp->next;
+  }
 }
 
