@@ -63,7 +63,7 @@ int main(void) {
 
   elem = list_remove(list, x);
   assert(elem != NULL);
-  free(elem->value);
+  //free(elem->value);   // keep the space for x,y,z,n for re-use later
   free(elem);
   assert(list_length(list) == 2);
 
@@ -74,15 +74,15 @@ int main(void) {
 
   elem = list_remove(list, z);
   assert(elem != NULL);
-  free(elem->value);
+  //free(elem->value);
   free(elem);
   assert(list_length(list) == 1);
 
-  list_print(list, (unsigned int) 10); // 5 TODO: fix the output
+  list_print(list, (unsigned int) 10); // 5
 
   elem = list_remove(list, y);
   assert(elem != NULL);
-  free(elem->value);
+  //free(elem->value);
   free(elem);
   assert(list_length(list) == 0);
 
@@ -91,12 +91,17 @@ int main(void) {
   elem = list_remove(list, y);
   assert(elem == NULL);
 
-  // TODO remove elements from the list or provide freeing function
-  list_destroy(list, free);
+  *x = *y = *z = *n = 7;
 
-  free(x);
-  free(y);
-  free(z);
+  list_append(list, z);
+  list_prepend(list, x);
+  list_append(list, y);
+  list_insert(list, n, 0);
+  list_remove_dupes(list, n, free);
+  assert(list_length(list) == 1);
+  list_print(list, (unsigned int) 1); // 7
+
+  list_destroy(list, free);
 
   return EXIT_SUCCESS;
 }

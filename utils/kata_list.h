@@ -28,7 +28,7 @@ extern long list_insert(list_t *l, void *value, int order);
 extern long list_append(list_t *l, void *value);
 extern long list_prepend(list_t *l, void *value);
 extern list_elem_t *list_remove(list_t *l, void *value);
-extern long list_remove_dupes(list_t *l, void *value); // TODO: need a function as argument to remove values
+extern long list_remove_dupes(list_t *l, void *value, void (*destroy_elem_fn)(void *value));
 extern list_elem_t *list_search(list_t *l, void *value);
 extern long list_sort(list_t *l, int order);
 extern void list_print(list_t *l, unsigned int cols);

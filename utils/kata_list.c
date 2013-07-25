@@ -3,21 +3,6 @@
 
 #include "kata_list.h"
 
-#if 0
-typedef struct list_elem {
-  struct list_elem *next;
-  void *value;
-} list_elem_t;
-
-
-typedef struct list {
-  struct list_elem *first;
-  struct list_elem *last;
-  long length;
-  void (*print_fn)(list_elem_t *);
-  int (*compare_fn)(void *a, void *b); // for sort and search
-} list_t;
-#endif
 
 list_t * list_create(void (*print)(void *), int (*compare)(void *a, void *b)) {
   list_t *new_list;
@@ -82,7 +67,7 @@ long list_insert(list_t *list, void *value, int order) {
 // (!) the user is responsible for freeing memory once no longer needed
 // usually returned by remove or pass destroy_elem_fn to list_destroy()
 long list_append(list_t *list, void *value) {
-  list_elem_t *new_elem, *elem_ptr;
+  list_elem_t *new_elem;
 
   assert(list != NULL);
 
@@ -97,7 +82,7 @@ long list_append(list_t *list, void *value) {
   if (list->length > 0) {
     list->last->next = new_elem;
   }
-  else { // list is empty
+  else {
     list->first = new_elem;
   }
 
@@ -143,7 +128,7 @@ list_elem_t *list_remove(list_t *list, void *value) {
     if (list->compare_fn(tmp->value, value) == 0) {
       if (prev == NULL) {        // deleting the first element
         list->first = tmp->next; // aka list->first->next
-        if (list_length == 1) {  // if it is also the last element
+        if (list->length == 1) {  // if it is also the last element
           list->last = NULL;
         }
       }
@@ -167,11 +152,33 @@ list_elem_t *list_remove(list_t *list, void *value) {
 }
 
 // returns the number of duplicates removed
-long list_remove_dupes(list_t *l, void *value) {
-  // TODO: need a function as argument to remove values
-  //       essentially a while loop calling remove until a NULL is returned
-  fprintf(stderr,"ERROR: list_remove_dupes() not im plemented yet\n");
-  exit(EXIT_FAILURE);
+long list_remove_dupes(list_t *list, void *value, void (*destroy_elem_fn)(void *value)) {
+  long cnt = 0;
+  list_elem_t *elem, *tmp, *prev;
+
+  elem = list_search(list, value);
+  if (elem == NULL) {
+    return 0;
+  }
+
+  prev = elem;
+  elem = elem->next;
+  while (elem != NULL) {
+    tmp = elem->next;
+    if (list->compare_fn(elem->value, value) == 0) {
+      destroy_elem_fn(elem->value);
+      free(elem);
+      prev->next = tmp;
+      if (tmp == NULL) {
+        list->last = prev;
+      }
+      list->length--;
+      ++cnt;
+    }
+    elem = tmp;
+  }
+
+  return cnt;
 }
 
 
@@ -191,7 +198,7 @@ list_elem_t *list_search(list_t *list, void *value) {
 }
 
 
-long list_sort(list_t *l, int order) {
+long list_sort(list_t *list, int order) {
   fprintf(stderr,"ERROR: list_sort() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
