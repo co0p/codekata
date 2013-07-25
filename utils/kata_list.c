@@ -39,7 +39,8 @@ list_t * list_create(void (*print)(void *), int (*compare)(void *a, void *b)) {
 }
 
 
-void list_destroy(list_t *list, void (*destroy_elem_fn)(list_elem_t *)) {
+void list_destroy(list_t *list, void (*destroy_elem_fn)(void *v)) {
+  list_elem_t *elem;
 
   if (list->length > 0 && destroy_elem_fn == NULL) {
     fprintf(stderr, "ERROR: no function for freeing elements provided while trying to destroy a non-empty list\n");
@@ -47,7 +48,11 @@ void list_destroy(list_t *list, void (*destroy_elem_fn)(list_elem_t *)) {
   }
 
   while (list->length > 0) {
-    destroy_elem_fn(list_remove(list, list->first->value));
+    elem = list_remove(list, list->first->value);
+    if (elem != NULL) {
+      destroy_elem_fn(elem->value);
+    }
+    free(elem);
   }
 
   free(list);
@@ -73,39 +78,33 @@ long list_insert(list_t *list, void *value, int order) {
   }
 }
 
-
+// adds a new element at the end of the list
 // (!) the user is responsible for freeing memory once no longer needed
-// usually returned by remove or pass destroy-elem-fn to list_destroy()
+// usually returned by remove or pass destroy_elem_fn to list_destroy()
 long list_append(list_t *list, void *value) {
-  long idx = 1;
   list_elem_t *new_elem, *elem_ptr;
 
   assert(list != NULL);
 
   if ((new_elem = malloc(sizeof(list_elem_t))) == NULL) {
-    fprintf(stderr, "FATAL ERROR: list_appen(): out of space\n");
+    fprintf(stderr, "FATAL ERROR: list_append(): out of space\n");
     exit(EXIT_FAILURE);
   }
 
   new_elem->next  = NULL;
   new_elem->value = value;
 
-  elem_ptr = list->first;
-  while (elem_ptr != NULL) {
-    elem_ptr = elem_ptr->next;
-    ++idx;
+  if (list->length > 0) {
+    list->last->next = new_elem;
   }
-
-  if (elem_ptr == NULL) {          // append new element
+  else { // list is empty
     list->first = new_elem;
   }
-  else {
-    elem_ptr->next = new_elem;
-  }
-  list->last  = new_elem;
+
+  list->last = new_elem;
   list->length++;
 
-  return idx; // starting with 1 (not 0, as for array indices)
+  return list->length; // starting with 1 (not 0, as for array indices)
 }
 
 
@@ -134,22 +133,61 @@ long list_prepend(list_t *list, void *value) {
 
 
 list_elem_t *list_remove(list_t *list, void *value) {
-  fprintf(stderr,"ERROR: list_remove() not im plemented yet\n");
-  exit(EXIT_FAILURE);
-  // search for value and remove
+  list_elem_t *tmp, *prev;
+
+  assert(list != NULL);
+
+  prev = NULL;
+  tmp = list->first;
+  while (tmp) {
+    if (list->compare_fn(tmp->value, value) == 0) {
+      if (prev == NULL) {        // deleting the first element
+        list->first = tmp->next; // aka list->first->next
+        if (list_length == 1) {  // if it is also the last element
+          list->last = NULL;
+        }
+      }
+      else if (tmp->next == NULL) {  // deleting the last element
+        list->last = prev;
+        prev->next = NULL;
+      }
+      else {  // somewhere in the middle
+        prev->next = tmp->next;
+      }
+
+      list->length--; // adjust length in any case
+
+      return tmp; // (!) user is responsible for freeing memory TODO: maybe pass a flag and a free_fn for convenience ?
+    }
+    prev = tmp;
+    tmp = tmp->next;
+  }
+
+  return NULL;     // no element with value 'value' found
 }
 
-
+// returns the number of duplicates removed
 long list_remove_dupes(list_t *l, void *value) {
+  // TODO: need a function as argument to remove values
+  //       essentially a while loop calling remove until a NULL is returned
   fprintf(stderr,"ERROR: list_remove_dupes() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
- // TODO: need a function as argument to remove values
 
 
-list_elem_t *list_search(void *value) {
-  fprintf(stderr,"ERROR: list_search() not im plemented yet\n");
-  exit(EXIT_FAILURE);
+list_elem_t *list_search(list_t *list, void *value) {
+  list_elem_t *tmp;
+
+  assert(list != NULL);
+
+  tmp = list->first;
+  while (tmp) {
+    if (list->compare_fn(tmp->value, value) == 0) {
+      return tmp;
+    }
+    tmp = tmp->next;
+  }
+  return NULL;
 }
 
 
@@ -157,6 +195,7 @@ long list_sort(list_t *l, int order) {
   fprintf(stderr,"ERROR: list_sort() not im plemented yet\n");
   exit(EXIT_FAILURE);
 }
+
 
 // print \n after every cols elements
 void list_print(list_t *list, unsigned int cols) {
@@ -173,9 +212,12 @@ void list_print(list_t *list, unsigned int cols) {
     else
       printf("NULL ");
 
-    if (cnt-- == 0)
+    if (--cnt == 0) {
       printf("\n");
+      cnt = cols;
+    }
     tmp = tmp->next;
   }
+  printf("\n");
 }
 
