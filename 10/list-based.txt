@@ -1,0 +1,20 @@
+== LIST-BASED KATAS ==
+
+A: Implement a function that removes duplicates
+
+B: Implement an alorithm to find a kth to last element (O(1) space, O(N) time)
+
+C: How to delete a node from the middle of the list having only access to that node?
+
+D: Partition a list around a value (pivot) in a list with elements smaller and
+   one with elements greater than (or equal to) that value.
+
+E: Implement is_palindrome(list)
+
+F: Given a circular list, return the first node of the circle.
+
+G:
+
+H:
+
+...
