@@ -71,12 +71,34 @@ list_elem_t *list_kth_to_last(list_t *list, int k) {
   return elem;
 }
 
+// C: (user responsible for cleanup)
+// move the next to current node and remove (and return) next
+// special case: last element (user needs to handle the return NULL)
+list_elem_t *remove_from_list(list_elem_t *e) {
+  list_elem_t *elem;
+  void *tmp;
+
+  assert(e);
+
+  if (e->next == NULL) {
+    return NULL; // failed to remove (could also encode this by setting value to NULL)
+  }
+
+  elem = e->next;
+  tmp = elem->value;
+  elem->value = e->value; // swap values (otherwise memory leak)
+  e->value = tmp;
+  e->next = elem->next;
+  // issue: can't update list->length from here
+
+  return elem; // to be freed by the user
+}
+
 
 int main(void) {
   list_t *list;
   int *x,*y,*z,*n,*m;
   list_elem_t *e;
-
 
   x = malloc(sizeof(int)); // no error checking done
   y = malloc(sizeof(int));
@@ -98,13 +120,25 @@ int main(void) {
   list_append(list, (void *) n);
   list_append(list, (void *) m);
 
-  //list_print(list, (unsigned int) 10);
+  list_print(list, (unsigned int) 10);
 
   e = list_kth_to_last(list, 25);
   assert(e == NULL);
   e = list_kth_to_last(list, 2); // 124
   assert(*((int *)e->value) == 124);
 
+
+  e = remove_from_list(list_search(list, n));
+  list->length--;
+  free(e->value);
+  free(e);
+
+  e = remove_from_list(list_search(list, x));
+  list->length--;
+  free(e->value);
+  free(e);
+
+  list_print(list, (unsigned int) 10);
   list_destroy(list, free);
 
   return EXIT_SUCCESS;
