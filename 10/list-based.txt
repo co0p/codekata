@@ -6,15 +6,19 @@ B: Implement an alorithm to find a kth to last element (O(1) space, O(N) time)
 
 C: How to delete a node from the middle of the list having only access to that node?
 
-D: Partition a list around a value (pivot) in a list with elements smaller and
+D: Partition a list around a value (pivot) in a part with elements smaller and
    one with elements greater than (or equal to) that value.
 
 E: Implement is_palindrome(list)
 
 F: Given a circular list, return the first node of the circle.
 
-G:
+G: Given two lists that represent tow numbers (e.g. 1->2->3 is 123), implement
+   a function that adds two numbers (Variation: lists strore number is
+   reverse order: e.g. 3->2->1 is 123).
 
-H:
+H: 1) implement a singly linked list (cf utils)
+   2) implemnet a doubly linked list
+   3) implement a list using an array
 
 ...
