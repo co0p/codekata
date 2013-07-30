@@ -176,7 +176,6 @@ list_t *list_reverse(list_t *list, void (*print_fn)(void *), int (*compare_fn)(c
                      void (*copy_fn)(void *a, void *b)) {
   list_t *new_list;
   list_elem_t *elem;
-  void *values;
   long idx;
 
   if (list == NULL)
@@ -185,34 +184,31 @@ list_t *list_reverse(list_t *list, void (*print_fn)(void *), int (*compare_fn)(c
   if (list->length == 0)
     return list;
 
-  if ((values = malloc(sizeof(values)*list->length)) == NULL) {
-    fprintf(stderr,"ERROR: list_reverse(): couldn't reverse a list due to lack of space\n");
-    return NULL;
-  }
+  long len = list->length;
+  void *values[len];
 
   new_list = list_create(print_fn, compare_fn);
-#if 0
+
   elem = list->first;
   idx = 0;
   while (elem) {                // store pointers in a temporary array
-    values+idx = elem->value;
+    values[idx] = elem->value;
     elem = elem->next;
     ++idx;
   }
 
   --idx;
   for (idx; idx >= 0; --idx) { // add values to the new list in reverse order
-    elem = new_empty_elem();
+
     if (copy_fn == NULL) {
-      values[idx] = elem->value; // swap pointers
+      list_append(new_list, values[idx]); // TODO: check interface for reverse (return new list vs old but reversed ?!)
     }
     else {  // copy_fn allocates new memory and copies the value
-        copy_fn(elem->value /* from */, values+idx /* to */));
-        list_append(new_list, value[idx]);
+        elem = malloc(sizeof(*elem)); // TODO: add error checking
+        copy_fn(values[idx]/* from */, elem->value/* to */);
+        list_append(new_list, values[idx]);
     }
   }
-#endif
-  free(values);
 
   return new_list;
 }
@@ -322,15 +318,17 @@ int main(void) {
   int a1 = 23, a2 = 42, a3 = 33,
       b1 = 23, b2 = 42, b3 = 33,
       c1 = 123, c2 = 99, c3 = 10,
-      d1 = 10, d2 = 99, d3 = 123;
+      d1 = 10, d2 = 99, d3 = 123,
+      p1 = 12, p2 = 34, p3 = 34, p4 = 12;
 
-  list_t *list1, *list2, *list3, *list4,
-         *rev_list2, *rev_list3;
+  list_t *list1, *list2, *list3, *list4, *plndrm,
+         *rev_list2, *revrev_list2,  *rev_list3;
 
   list1 = list_create(int_print, int_cmp);
   list2 = list_create(int_print, int_cmp);
   list3 = list_create(int_print, int_cmp);
   list4 = list_create(int_print, int_cmp);
+  plndrm = list_create(int_print, int_cmp);
 
   list_append(list1, (void *) &a1);
   list_append(list1, (void *) &a2);
@@ -351,6 +349,12 @@ int main(void) {
   list_append(list4, (void *) &d3);
   list_print(list4, (unsigned int) 10);
 
+  list_append(plndrm, (void *) &p1);
+  list_append(plndrm, (void *) &p2);
+  list_append(plndrm, (void *) &p3);
+  list_append(plndrm, (void *) &p4);
+  list_print(plndrm, (unsigned int) 10);
+
   assert(list_equal(list1, NULL) == false);  // testing list_equal()
   assert(list_equal(NULL, list1) == false);
   assert(list_equal(list1, list1) == true);  // list is equal to itself
@@ -359,14 +363,26 @@ int main(void) {
   list_append(list3, (void *) &c3);
   assert(list_equal(list1, list3) == false); // now same size but unequal elements
 
-  // TODO testing list_reverse() (w and w/o copy_fn)
+  // testing list_reverse() (w/o and  [TODO] w copy_fn)
+  rev_list2 = list_reverse(list2, list2->print_fn, list2->compare_fn, NULL);
+  rev_list3 = list_reverse(list3, list3->print_fn, list3->compare_fn, NULL);
+  revrev_list2 = list_reverse(rev_list2, rev_list2->print_fn, rev_list2->compare_fn, NULL);
+  assert(list_equal(list4, rev_list3));
+  assert(list_equal(list2, revrev_list2));
 
-  // TODO testing is_palindrome()
+  // testing is_palindrome()
+  assert(is_palindrome(NULL, NULL) == false);
+  assert(is_palindrome(list1, NULL) == false);
+  assert(is_palindrome(plndrm, NULL) == true);
 
   list_destroy(list1, NULL);
   list_destroy(list2, NULL);
   list_destroy(list3, NULL);
   list_destroy(list4, NULL);
+  list_destroy(rev_list2, NULL);
+  list_destroy(rev_list3, NULL);
+  list_destroy(revrev_list2, NULL);
+  list_destroy(plndrm, NULL);
 
   return EXIT_SUCCESS;
 }
