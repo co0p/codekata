@@ -14,9 +14,9 @@ E: Implement is_palindrome(list)
 
 F: Given a circular list, return the first node of the circle.
 
-G: Given two lists that represent tow numbers (e.g. 1->2->3 is 123), implement
-   a function that adds two numbers (Variation: lists strore number is
-   reverse order: e.g. 3->2->1 is 123).
+G: a) Given two lists that represent two numbers (e.g. 1->2->3 is 123), implement
+      a function that adds two numbers
+   b) Variation: lists store the numbers in reverse order: e.g. 3->2->1 is 123).
 
 (H:) 1) implement a singly linked list (cf ../utils/)
      2) implemnet a doubly linked list
@@ -254,6 +254,41 @@ bool is_palindrome(list_t *list, void (*free_fn)(void *v)) {
   return ret;
 }
 
+
+// G: b)
+// assumes int-valued list
+list_t* int_list_add(list_t *k, list_t *l) {
+  list_t *sum_list;
+  list_elem_t *ek, *el;
+  int carry = 0, vk, vl, sum, *tmp_val;
+
+  assert(k && l);
+
+  sum_list = list_create(int_print, int_cmp);
+
+  ek = k->first;
+  el = l->first;
+  while (ek || el) {
+      tmp_val = malloc(sizeof(int)); // TODO add error checking
+      vk = ek ? *((int *)(ek->value)) : 0;
+      vl = el ? *((int *)(el->value)) : 0;
+      sum = vk + vl + carry;
+      *tmp_val = sum;
+      list_append(sum_list, (void *) tmp_val); // user needs to free the memory later on
+      carry = sum > 9 ? 1 : 0;
+      ek = ek ? ek->next : NULL;
+      el = el ? el->next : NULL;
+  }
+  if (carry = 1) {
+    tmp_val = malloc(sizeof(int));
+    *tmp_val = 1;
+    list_append(sum_list, (void *) tmp_val);
+  }
+
+  return sum_list;
+}
+
+
 int main(void) {
   list_t *list;
   int *x,*y,*z,*n,*m;
@@ -313,7 +348,7 @@ int main(void) {
 
   list_destroy(list, free);
 
-  printf("\n=================================\n");
+  printf("\n=================================\n\n");
 
   int a1 = 23, a2 = 42, a3 = 33,
       b1 = 23, b2 = 42, b3 = 33,
@@ -383,6 +418,10 @@ int main(void) {
   list_destroy(rev_list3, NULL);
   list_destroy(revrev_list2, NULL);
   list_destroy(plndrm, NULL);
+
+  printf("\n=================================\n\n");
+
+  // TODO: test G b): int_list_add(list_t *k, list_t *l)
 
   return EXIT_SUCCESS;
 }
