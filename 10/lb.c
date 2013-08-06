@@ -289,6 +289,43 @@ list_t* int_list_add(list_t *k, list_t *l) {
 }
 
 
+// util for F:
+struct int_visitable {
+  int value;
+  bool visited;
+} int_visitable_t;
+
+
+// F: the idea is to extend the value to a struct that notes
+//    whether the node has been visited already
+//    so that if a node is encountered twice, it is a start of a circle and is returned
+//    (returns NULL otherwise)
+// [this implementation relies on the availablity of the elem->value.visited field]
+// TODO: add tests
+list_elem_t *list_find_circle(list_t *list) {
+  list_elem_t *elem;
+
+  if (list == NULL || list->length == 0) {
+    return NULL;
+  }
+
+  elem = list->first;
+  while (elem != NULL) {
+    if (elem->value.visited == false) {
+      elem->value.visited = true;
+      elem = elem->next;
+    }
+    else {
+      break; /* visited == true */
+    }
+  }
+
+  return elem;
+}
+
+
+
+
 int main(void) {
   list_t *list;
   int *x,*y,*z,*n,*m;
