@@ -128,14 +128,19 @@ myCompress' y (x:xs) = if y == x then myCompress' x xs
 
 -- 9: Pack consecutive duplicates of list elements into sublists. 
 --    If a list contains repeated elements they should be placed in separate sublists.
+myPack :: Eq a => [a] -> [[a]]
+myPack [] = []
+myPack xs = (takeWhile (== x) xs) : (myPack $ dropWhile (==x) xs)
+            where x = head xs
 
-
+-- alternative: use an accumulator
 
 
 -- 10: Run-length encoding of a list. Use the result of problem P09 
 --     to implement the so-called run-length encoding data compression method. 
---     Consecutive duplicates of elements are encoded as lists (N E) 
+--     Consecutive duplicates of elements are encoded as a list of tuples (N,E) 
 --     where N is the number of duplicates of the element E.
-
-
+myRunLenEnc :: Eq a => [a] -> [(Int,a)]
+myRunLenEnc xs = zip (map length pxs) (map head pxs)
+                 where pxs = myPack xs
 
