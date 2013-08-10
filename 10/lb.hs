@@ -128,12 +128,20 @@ myCompress' y (x:xs) = if y == x then myCompress' x xs
 
 -- 9: Pack consecutive duplicates of list elements into sublists. 
 --    If a list contains repeated elements they should be placed in separate sublists.
+--    (cf group from Data.List)
 myPack :: Eq a => [a] -> [[a]]
 myPack [] = []
 myPack xs = (takeWhile (== x) xs) : (myPack $ dropWhile (==x) xs)
             where x = head xs
 
 -- alternative: use an accumulator
+-- or (Import List for group):
+-- encode xs = map (\x -> (length x,head x)) (group xs)
+-- 
+-- [(length x, head x) | x <- group xs]
+--
+-- encode xs = (enc . pack) xs
+--	where enc = foldr (\x acc -> (length x, head x) : acc) []
 
 
 -- 10: Run-length encoding of a list. Use the result of problem P09 
@@ -143,4 +151,8 @@ myPack xs = (takeWhile (== x) xs) : (myPack $ dropWhile (==x) xs)
 myRunLenEnc :: Eq a => [a] -> [(Int,a)]
 myRunLenEnc xs = zip (map length pxs) (map head pxs)
                  where pxs = myPack xs
+-- or:
+-- pack (x:xs) = let (first,rest) = span (==x) xs
+--               in (x:first) : pack rest
+-- pack []     = []
 
