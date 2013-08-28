@@ -1,6 +1,8 @@
 -- open in ghci
--- http://www.haskell.org/haskellwiki/99_questions/1_to_10
+-- http://www.haskell.org/haskellwiki/99_questions/
 -- (solutions available there too)
+
+import Data.List
 
 -- 1: get last element of the list
 -- Prelude: last
@@ -155,4 +157,41 @@ myRunLenEnc xs = zip (map length pxs) (map head pxs)
 -- pack (x:xs) = let (first,rest) = span (==x) xs
 --               in (x:first) : pack rest
 -- pack []     = []
+
+
+-- 11-10 section:
+
+-- Modify the result of problem 10 in such a way that if an element has no duplicates 
+-- it is simply copied into the result list. Only elements with duplicates are transferred as (N E) lists.
+data Multiple a = Multiple Int a
+                | Single a
+  deriving Show
+
+myRunLenEnc' :: Eq a => [a] -> [Multiple a]
+myRunLenEnc' xs = mOs $ zip (map length pxs) (map head pxs)
+                  where pxs = myPack xs
+                        mOs :: Eq a => [(Int,a)] -> [Multiple a]
+                        mOs [] =  []
+                        mOs xs = map (\x -> if fst x > 1 then Multiple (fst x) (snd x) else Single (snd x)) xs
+
+-- alternatively re-use 10:
+-- map helper . sol10
+-- where helper (1,x) = Single x
+--       helper (n,x) = Multiple n x
+
+
+-- Given a run-length code list generated as specified in problem 11. Construct its uncompressed version
+myRunLenDec' :: [Multiple a] -> [a]
+myRunLenDec' [] = []
+myRunLenDec' xs = concat (map fromMultiple xs)   -- or: concatMap fromMultiple
+  where
+    fromMultiple x =
+      case x of
+       (Single a)     -> [a]
+       (Multiple n a) -> replicate n a
+
+
+
+
+
 
