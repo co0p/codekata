@@ -183,15 +183,41 @@ myRunLenEnc' xs = mOs $ zip (map length pxs) (map head pxs)
 -- Given a run-length code list generated as specified in problem 11. Construct its uncompressed version
 myRunLenDec' :: [Multiple a] -> [a]
 myRunLenDec' [] = []
-myRunLenDec' xs = concat (map fromMultiple xs)   -- or: concatMap fromMultiple
+myRunLenDec' xs = concat (map fromMult xs)   -- or: concatMap fromMult
   where
-    fromMultiple x =
+    fromMult x =
       case x of
-       (Single a)     -> [a]
-       (Multiple n a) -> replicate n a
+        (Single a)     -> [a]
+        (Multiple n a) -> replicate n a
 
 
+fromMultiple :: Multiple a -> (Int,a)
+fromMultiple (Single x)     = (1,x)
+fromMultiple (Multiple n x) = (n,x)
 
+toMultiple :: Int -> a -> Multiple a 
+toMultiple n x
+  | n > 1  = Multiple n x
+  | n == 1 = Single x
+  | otherwise = error "n should be > 0 in toMultiple()"
+
+
+-- 13: enc direct, don't create lists with multiples
+myEncDirect :: Eq a => [a] -> [Multiple a]
+myEncDirect xs = med xs []
+  where med [] acc = reverse acc
+        med (x:xs) [] = med xs [(Single x)]
+        med (x:xs) (a:as) 
+          | x == a'   = med xs ((toMultiple (n'+1) a') : as)
+          | otherwise = med xs ((Single x) : a : as)
+            where (n',a') = fromMultiple a
+                      
+-- 14: duplicate all elements of a list
+duplicate :: [a] -> [a]
+duplicate xs = dup 2 xs
+  where dup n xs = concatMap (replicate n) (xs)
+
+-- or: d = x:x:d xs
 
 
 
