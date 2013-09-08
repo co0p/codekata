@@ -3,6 +3,7 @@
 -- (solutions available there too)
 
 import Data.List
+import Data.List.Split
 
 -- 1: get last element of the list
 -- Prelude: last
@@ -214,10 +215,21 @@ myEncDirect xs = med xs []
                       
 -- 14: duplicate all elements of a list
 duplicate :: [a] -> [a]
-duplicate xs = dup 2 xs
-  where dup n xs = concatMap (replicate n) (xs)
+duplicate xs = repli 2 xs
 
 -- or: d = x:x:d xs
 
+-- 15: replicate (n times)
+repli :: Int -> [a] -> [a]
+repli n = concatMap (replicate n)
 
+
+-- 16: drop every n-th element from the list
+dropAllNth :: Int -> [a] -> [a]
+dropAllNth n xs
+  | (n <= 1)  = []
+  | otherwise = concatMap dropLast (splitEvery n xs)
+  where dropLast xs = 
+          if length xs < n then xs
+          else init xs            
 
