@@ -29,3 +29,4 @@ more ?
 - http://programmingpraxis.com
 - http://www.haskell.org/haskellwiki/H-99:_Ninety-Nine_Haskell_Problems
 - 'Cracking the Coding Interview' by Gayle Laakmann McDowell, careercup.com
+- codility.com -> training
