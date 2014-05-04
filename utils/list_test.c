@@ -13,24 +13,23 @@ void int_print(void *a) {
   (void) printf("%d ", *i);
 }
 
-// compare two ints
-// returns:  0  if a == b
-//          n>0 if a > b
-//          n<0 if a < b
-int int_cmp(void *a, void *b) {
-  int *x, *y;
+// compares two ints
+int int_cmp(const void *a, const void *b) {
+  int x, y;
   assert(a && b);
 
-  x = (int *) a;
-  y = (int *) b;
+  x = *((int *) a);
+  y = *((int *) b);
 
-  return (*x - *y);
+  if (x > y) return  1;
+  if (x < y) return -1;
+/*(x == y)*/ return  0;
 }
 
 int main(void) {
-  list_t *list;
+  list_t *list, *list2;
   list_elem_t *elem;
-  int *x, *y, *z, *n;
+  int *x, *y, *z, *n, *m;
   long ret;
 
   x = malloc(sizeof(int)); // no error checking done
@@ -97,11 +96,38 @@ int main(void) {
   list_prepend(list, x);
   list_append(list, y);
   list_insert(list, n, 0);
-  list_remove_dupes(list, n, free);
+  list_remove_dupes(list, n, free); // frees the values
   assert(list_length(list) == 1);
   list_print(list, (unsigned int) 1); // 7
 
-  list_destroy(list, free);
+  list_destroy(list, free); // also frees the last element's value
+
+  // test the sorting function: TODO need more testing, asserts etc.
+  list2 = list_create(int_print, int_cmp);
+
+  x = malloc(sizeof(int)); // no error checking done
+  y = malloc(sizeof(int));
+  z = malloc(sizeof(int));
+  n = malloc(sizeof(int));
+  m = malloc(sizeof(int));
+
+  *x = 891;
+  *y = 52;
+  *z = 124;
+  *n = 234;
+  *m = 73;
+
+  list_append(list2, (void *) x);
+  list_append(list2, (void *) y);
+  list_append(list2, (void *) z);
+  list_append(list2, (void *) n);
+  list_append(list2, (void *) m);
+
+  list_print(list2, (unsigned int) 10);
+  list_sort(list2);                        // FIXME
+  list_print(list2, (unsigned int) 10);
+
+  list_destroy(list2, free); // also frees the last element's value
 
   return EXIT_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #include "kata_list.h"
 
 
-list_t * list_create(void (*print)(void *), int (*compare)(void *a, void *b)) {
+list_t * list_create(void (*print)(void *), int (*compare)(const void *a, const void *b)) {
   list_t *new_list;
 
   assert(print && compare);
@@ -28,13 +28,13 @@ void list_destroy(list_t *list, void (*destroy_elem_fn)(void *v)) {
   list_elem_t *elem;
 
   if (list->length > 0 && destroy_elem_fn == NULL) {
-    fprintf(stderr, "ERROR: no function for freeing elements provided while trying to destroy a non-empty list\n");
-    return;
+    fprintf(stderr, "WARNING: values not freed as no destroy_elem_fn() provided for a non-empty list\n");
+    //return; // user is responsible to free values (or to use automatic vars)
   }
 
   while (list->length > 0) {
     elem = list_remove(list, list->first->value);
-    if (elem != NULL) {
+    if (elem != NULL && destroy_elem_fn != NULL) {
       destroy_elem_fn(elem->value);
     }
     free(elem);
@@ -52,12 +52,16 @@ inline long list_length(list_t *list) {
 // returns th eindex of the element in the list
 // order can be 0 -> no order (use append)
 //              1 -> ascending, before a value that is larger    TODO
-//             -1 -> descending, befaore a value that is smaller TODO
+//             -1 -> descending, before a value that is smaller TODO
 long list_insert(list_t *list, void *value, int order) {
-  if (order == 0) {
+  if (order == 0) {      // no order
     return list_append(list, value);
   }
-  else {
+  else if (order > 0) {  // ascending
+      fprintf(stderr,"ERROR: list_insert(): order != 0, not im plemented yet\n");
+      exit(EXIT_FAILURE);
+  }
+  else /* order < 0 */ { // descending
       fprintf(stderr,"ERROR: list_insert(): order != 0, not im plemented yet\n");
       exit(EXIT_FAILURE);
   }
@@ -198,9 +202,45 @@ list_elem_t *list_search(list_t *list, void *value) {
 }
 
 
-long list_sort(list_t *list, int order) {
-  fprintf(stderr,"ERROR: list_sort() not im plemented yet\n");
-  exit(EXIT_FAILURE);
+// (!) FIXME FIXME FIXME
+long list_sort(list_t *list) {
+
+  if (list == NULL)
+    return -1;
+
+  long i, idx, len = list->length;
+  void *values[len];
+  list_elem_t *elem;
+
+  idx  = 0;
+  elem = list->first;
+  while (elem) {                    // have the pointers in an array
+    values[idx] = elem->value;
+    elem = elem->next;
+    ++idx;
+  }
+
+  for (i = 0; i < len; ++i) {
+    printf("%d ", *((int *) values[i]));
+  }
+  printf("\n");
+
+  qsort(values, sizeof(values)/sizeof(*values), sizeof(*values), list->compare_fn); // sort the array, use compare_fn to control order
+
+  for (i = 0; i < len; ++i) {
+    printf("%d ", *((int *) values[i]));
+  }
+  printf("\n");
+
+  idx  = 0;
+  elem = list->first;
+  while (elem) {      // copy pointer back to the list
+    elem->value = values[idx];
+    elem = elem->next;
+    ++idx;
+  }
+
+  return 1;
 }
 
 
