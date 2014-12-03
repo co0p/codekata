@@ -7,3 +7,4 @@ A collection of useful functions and data structures.
 
 TODO: merge sort on singly-linked lists
 
+TODO: stack, queue, deque, tree, graph ...
