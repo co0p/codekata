@@ -7,7 +7,7 @@
 -- compile: ghc -O2 --make sieve.hs
 --     run: ./sieve <n>
  
-import System(getArgs)
+import System.Environment(getArgs)
 
 -- the way lazyness is used make this version sequential,
 -- which requires a from scratch re-write to parallelise it
