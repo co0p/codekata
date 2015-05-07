@@ -5,6 +5,8 @@
 #define true 1
 #define false 0
 
+#warning "FIXME: the output is currently incorrect"
+
 /* 
 * returns 1 if candidate is prime, 0 otherwise 
 */

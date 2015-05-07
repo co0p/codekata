@@ -18,15 +18,15 @@ int main(int argc, char **argv) {
 	long n, i, j, sqrLen, cnt = 0;
 	int nthreads;
 	char *primes;
-	clock_t cl;
+	//clock_t cl;
 	double elapsed = 0.0;
 	FILE *out = NULL;
 	
 	if (argc < 2) {
-		printf("usage: %s <n> [<num threads>] [<out-file>]\n", argv[0]); 	      /* get n */
+		printf("usage: %s <n> [<num threads>] [<out-file>]\n", argv[0]);
 		return EXIT_FAILURE;
 	}
-	n = atol(argv[1]);
+	n = atol(argv[1]); /* get n */
 	
 	if (argc >= 3) {
 	    nthreads = atoi(argv[2]);
