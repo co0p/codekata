@@ -22,6 +22,12 @@ Source code (also referred to as source or code) is the version of software as
 it is originally written (i.e., typed into a computer) by a human in plain text 
 (i.e., human readable alphanumeric characters).
 
+List of Katas
+--------
+01 Sieve of Eratosthenes
+02 FizzBuzz
+TODO: add the rest
+
 more ?
 --------
 - http://codekata.pragprog.com/
