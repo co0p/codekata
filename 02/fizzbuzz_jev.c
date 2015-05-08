@@ -4,7 +4,7 @@
    date: 06/10/12
    
 compile: gcc -Wall -pedantic -O2 -std=c99 -o fizzbuzz_jev fizzbuzz_jev.c
-    run: ./fizbuzz_jev <uppder bound>
+    run: ./fizbuzz_jev <upper bound>
 
  This is the infamous 'FizzBuzz' Kata.
  Check out README for details.
