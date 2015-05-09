@@ -2,11 +2,10 @@
 -- Haskell (sequential version)
 
 -- compile: ghc -O2 --make reverse_jev_hs.hs
---     run: ./reverse_jeve_hs <sentence>
+--     run: ./reverse_jev_hs <sentence>
 
--- TODO: add argument check for a nice usage message
- 
-import System(getArgs)
+import System.Environment(getArgs)
+import Data.List
 
 stringListToString :: [[Char]] -> [Char] -> [Char]
 stringListToString [] _ = []
@@ -14,7 +13,12 @@ stringListToString (x:xs) separator | null xs   = x
                                     | otherwise = x ++ separator ++ stringListToString xs separator
 
 main = do  
-           args <- getArgs      
-           let separator = " "
-               result = stringListToString (reverse args) separator
-           print result
+         args <- getArgs      
+         if null args
+           then error "usage: ./reverse_jev_hs <sentence>"
+           else do
+                  let 
+                    --separator = " "
+                    --result = stringListToString (reverse args) separator
+                    result = concat $ intersperse " " $ reverse args
+                  print result
