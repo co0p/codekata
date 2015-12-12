@@ -24,9 +24,21 @@ it is originally written (i.e., typed into a computer) by a human in plain text
 
 List of Katas
 --------
-01 Sieve of Eratosthenes
-02 FizzBuzz
-TODO: add the rest
+- 01 Sieve of Eratosthenes (finding prime numbers) 
+- 02 FizzBuzz (conditional expressions)
+- 03 (not yet added)
+- 04 Reverse Word Order (in-place)
+- 05 (not yet added)
+- 06 Unique (A: return True if argument string has no duplicate chars, False otherwise; B: return True if second argument is permutation of the first, False otherwise)
+- 07 Reverse a String (in-place)
+- 08 Replace Characters in an Array (C arrays)
+- 09 2d-Arrays (rotate a matrix; set some rows to zeroes)
+- 10 List-Based Tasks
+- 11 (not yet added)
+- 12 MasterMind (command-line game)
+- 13 Calendar Functions
+- (more: TODO)
+- 99 '99 Bottles of Beer' (repetition with several different cases)
 
 more ?
 --------

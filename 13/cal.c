@@ -7,7 +7,7 @@
 #define GREGORIAN 2
 
 /*
- * return the day of the week for particualr date
+ * return the day of the week for particular date
  * flag JULIAN or GREGORIAN
  * (the divisions are integer divisions that truncate the result)
  * Sun = 0, Mon = 1, etc.
